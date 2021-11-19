@@ -1,6 +1,5 @@
-# app.py
 from flask import Flask, flash, request, redirect, url_for, render_template, Blueprint
-import urllib.request
+import json
 import os
 from werkzeug.utils import secure_filename
 
@@ -17,23 +16,24 @@ def allowed_file(filename):
 def home():
     return render_template('templates/index.html')
 
-@images.route('/', methods=['POST'])
+@images.route('/image', methods=['POST'])
 def upload_image():
+    aaa = request
     if 'file' not in request.files:
         flash('No file part')
         return redirect(request.url)
     file = request.files['file']
     if file.filename == '':
         flash('No image selected for uploading')
-        return redirect(request.url)
+        return json.dumps({'success': False}), 403, {'ContentType': 'application/json'}
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join('static/uploads', filename))
-        flash('Image successfully uploaded and displayed below')
-        return render_template('index.html', filename=filename)
+        print('Image successfully uploaded and displayed below')
+        return json.dumps({'success': True}), 200, {'ContentType': 'application/json'},
     else:
-        flash('Allowed image types are - png, jpg, jpeg, gif')
-        return redirect(request.url)
+        print('Allowed image types are - png, jpg, jpeg, gif')
+        return json.dumps({'success': False}), 403, {'ContentType': 'application/json'}
 
 
 @images.route('/display/<filename>')
