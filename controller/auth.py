@@ -2,28 +2,22 @@ import json
 from flask_httpauth import HTTPBasicAuth
 from flask import jsonify
 from flask import Blueprint, request
-import sqlite3
+
+from service.user_service import UserService
 
 DATABASE = 'database.db'
 auth = Blueprint('auth', __name__)
 authorize = HTTPBasicAuth()
 
+user_service = UserService()
 
 @auth.route('/login', methods=['POST'])
 def login():
-    content = request.json
-    username = content['username']
-    password = content['password']
-    con = sqlite3.connect(DATABASE)
-    cur = con.cursor()
-    cur.execute(f"SELECT user_id FROM users WHERE username='{username}' AND password='{password}'")
-    user = cur.fetchall()
-    con.close()
+    login_request_data = request.json
+    user = user_service.login(login_request_data)
     if len(user) > 0:
-        print('Logowanie zakonczone sukcesem')
         return json.dumps({'success': True}), 200, {'ContentType': 'application/json'},
     else:
-        print('Logowanie nieudane')
         return json.dumps({'success': False}), 403, {'ContentType': 'application/json'}
 #@authorize.verify_password
 
@@ -34,13 +28,7 @@ def get_response():
     return jsonify('You are an authenticate person to see this message')
 
 @auth.route('/signup', methods=['POST'])
-def signUp():
+def sign_up():
     request_data = request.get_json()
-    username = request_data['username']
-    password = request_data['password']
-    con = sqlite3.connect(DATABASE)
-    cur = con.cursor()
-    cur.execute(f"INSERT INTO users (username, password) VALUES('{username}','{password}')")
-    con.commit()
-    con.close()
+    user_service.save(request_data)
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
