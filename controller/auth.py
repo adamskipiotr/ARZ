@@ -11,19 +11,17 @@ authorize = HTTPBasicAuth()
 
 user_service = UserService()
 
-@auth.route('/login', methods=['POST'])
-def login():
-    login_request_data = request.json
-    user = user_service.login(login_request_data)
+
+
+@authorize.verify_password
+def verify_password(username, password):
+    user = user_service.login(username, password)
     if len(user) > 0:
-        return json.dumps({'success': True}), 200, {'ContentType': 'application/json'},
-    else:
-        return json.dumps({'success': False}), 403, {'ContentType': 'application/json'}
-#@authorize.verify_password
+        return True
+    return False
 
-
-@authorize.login_required
 @auth.route('/response',methods=['GET'])
+@authorize.login_required
 def get_response():
     return jsonify('You are an authenticate person to see this message')
 
@@ -31,4 +29,10 @@ def get_response():
 def sign_up():
     request_data = request.get_json()
     user_service.save(request_data)
+    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+
+@auth.route('/delete', methods=['DELETE'])
+def delete_user():
+    request_data = request.get_json()
+    user_service.delete(request_data)
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}

@@ -14,12 +14,18 @@ class UserService:
         con.commit()
         con.close()
 
-    def login(self, login_request):
-        username = login_request['username']
-        password = login_request['password']
+    def login(self, username,password):
         con = sqlite3.connect(DATABASE)
         cur = con.cursor()
         cur.execute(f"SELECT user_id FROM users WHERE username='{username}' AND password='{password}'")
         user = cur.fetchall()
         con.close()
         return user
+
+    def delete(self, user_request):
+        username = user_request['username']
+        password = user_request['password']
+        con = sqlite3.connect(DATABASE)
+        cur = con.cursor()
+        cur.execute(f"DELETE FROM users WHERE username='{username}' AND password='{password}'")
+        con.close()
