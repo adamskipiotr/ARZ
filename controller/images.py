@@ -4,10 +4,13 @@ import os
 from werkzeug.utils import secure_filename
 
 from service.images_neural_network import NeuralNetworkManager
+from service.images_service import ImagesService
 
 images = Blueprint('images', __name__)
 app = Flask(__name__)
 UPLOAD_FOLDER = 'static/uploads/'
+
+images_service = ImagesService()
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -46,3 +49,9 @@ def train_neural_network():
 @images.route('/display/<filename>')
 def display_image(filename):
     return redirect(url_for('static', filename='uploads/' + filename), code=301)
+
+
+@images.route('/<animalName>/<isCorrect>')
+def evaluate_animal(animalName, isCorrect):
+    images_service.updateAnimalCategoryRating(animalName, isCorrect)
+    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
