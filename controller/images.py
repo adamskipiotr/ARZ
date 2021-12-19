@@ -52,6 +52,12 @@ def display_image(filename):
 
 
 @images.route('/<animalName>/<isCorrect>')
-def evaluate_animal(animalName, isCorrect):
-    images_service.updateAnimalCategoryRating(animalName, isCorrect)
+def evaluate_animal(animal_name, is_correct):
+    images_service.update_animal_category_rating(animal_name, is_correct)
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+
+@images.route('/get-animals-stats')
+def get_animals_stats():
+    animals_rating = images_service.get_animals_category_rating()
+    json_string = json.dumps([animal_rating.__dict__ for animal_rating in animals_rating])
+    return json_string, 200
