@@ -36,3 +36,9 @@ def delete_user():
     request_data = request.get_json()
     user_service.delete(request_data)
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+
+@auth.route('/change-password', methods=['DELETE'])
+def delete_user():
+    request_data = request.get_json()
+    user_service.change_password(request_data)
+    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}

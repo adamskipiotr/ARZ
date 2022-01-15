@@ -29,3 +29,11 @@ class UserService:
         cur = con.cursor()
         cur.execute(f"DELETE FROM users WHERE username='{username}' AND password='{password}'")
         con.close()
+
+    def change_password(self, user_request):
+        username = user_request['username']
+        newPassword = user_request['newPassword']
+        con = sqlite3.connect(DATABASE)
+        cur = con.cursor()
+        cur.execute(f"UPDATE users SET password='{newPassword}' WHERE username='{username}'")
+        con.close()
