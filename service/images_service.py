@@ -17,7 +17,7 @@ class ImagesService:
             f"SELECT positive FROM animals_recognition WHERE name='{animal_name}'").fetchone()
         number_of_positives = positives_rs[0]
         number_of_attempts = number_of_attempts + 1
-        if is_correct:
+        if is_correct == 'true':
             number_of_positives = number_of_positives + 1
         cur.execute(
             f"UPDATE animals_recognition SET attempts = {number_of_attempts}, positive = {number_of_positives} WHERE name ='{animal_name}'")
