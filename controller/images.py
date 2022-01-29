@@ -25,7 +25,6 @@ def upload_image():
         return json.dumps({'success': False}), 403, {'ContentType': 'application/json'}
     file = request.files['file']
     if file.filename == '':
-        flash('No image selected for uploading')
         return json.dumps({'success': False}), 403, {'ContentType': 'application/json'}
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
@@ -35,7 +34,6 @@ def upload_image():
         data = {'prediction': str(prediction)}
         return jsonify(data), 200
     else:
-        print('Allowed image types are - png, jpg, jpeg, gif')
         return json.dumps({'success': False}), 403, {'ContentType': 'application/json'}
 
 
@@ -44,12 +42,6 @@ def train_neural_network():
     neural_network_manager = NeuralNetworkManager()
     neural_network_manager.create_neural_network()
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'},
-
-
-@images.route('/display/<filename>')
-def display_image(filename):
-    return redirect(url_for('static', filename='uploads/' + filename), code=301)
-
 
 @images.route('/<animalName>/<isCorrect>')
 def evaluate_animal(animalName, isCorrect):

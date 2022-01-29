@@ -18,7 +18,7 @@ class NeuralNetworkManager:
 
     def create_data(self):
         data = []
-        categories = {"gallina": "chicken", "elefante": "elephant", "gatto": "cat"}
+        categories = {"gallina": "butterfly", "elefante": "elephant", "gatto": "cat"}
         animals = ["chicken", "elephant", "cat"]
         for category, translate in categories.items():
             path = "F:\\AnimalsDataset\\raw-img\\" + category
